@@ -1,3 +1,4 @@
+import os
 from steg import steg_img
 from PIL import Image,ImageTk
 from tkinter import Frame,Tk,PhotoImage,Label,Entry,IntVar,StringVar,BooleanVar,Button,Checkbutton,W,E,N,S,LEFT,RIGHT,HORIZONTAL,VERTICAL
@@ -13,8 +14,11 @@ def truncate(text:str):
 
 def filepick(element):
     xpath = tfd.askopenfilename()
-    element.set(xpath)
-def folderpick(self):
+    if xpath:
+        element.set('')
+        element.set(xpath)
+
+def folderpick(element):
     pass
 
 def filehide(textfile,imagefile):
@@ -23,7 +27,7 @@ def filehide(textfile,imagefile):
     a.hide()
 
 def extract(imagefile):
-    print('[+] Estracting data from',imagefile)
+    print('[+] Extracting data from',imagefile)
     b = steg_img.IMG(image_path=imagefile)
     b.extract()
 
@@ -67,13 +71,13 @@ class Unhide(SFrame):
         super().__init__()
         self.label1 = Label(self.look,text='Imagen:')
         self.label1.grid(row=1,column=1,sticky=W,pady=10)
-        self.var1 = StringVar()
-        self.label2 = Label(self.look,width=20,anchor=W,textvariable=self.var1)
+        self.var3 = StringVar()
+        self.label2 = Label(self.look,width=20,anchor=W,textvariable=self.var3)
         self.label2.grid(row=1,column=2,sticky=W,pady=10)
-        self.button1 = Button(self.look,text='Examinar',command=lambda:filepick(self.var1))
+        self.button1 = Button(self.look,text='Examinar',command=lambda:filepick(self.var3))
         self.button1.grid(row=2,column=2,pady=10)
 
-        self.button3 = Button(self.look,text='Ejecutar',command=lambda:extract(self.var1.get()))
+        self.button3 = Button(self.look,text='Ejecutar',command=lambda:extract(self.var3.get()))
         self.button3.grid(row=6,column=2,pady=10)
 
 class MainWindow:

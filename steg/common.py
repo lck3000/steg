@@ -3,6 +3,7 @@ steg - common.py
 :author: Andrew Scott
 :date: 6-25-2018
 '''
+import os
 from os.path import getsize
 from binascii import b2a_hex, a2b_hex
 from random import choice
@@ -22,6 +23,8 @@ class Common:
 
     def __init__(self, file_path):
         self.carrier_file = file_path
+        # self.carrier_root = os.path.split(self.carrier_file)[0]
+        # print(self.carrier_root,type(self.carrier_root))
 
         if file_path != None:
             self.file_type = (file_path.split('.')[-1]).upper()
@@ -75,7 +78,7 @@ class Common:
         b[-1] = new_bit
         return int(''.join(b),2)
 
-    def reconstitute_from_binary(self, raw_bits):
+    def reconstitute_from_binary(self, raw_bits,dest=None):
         try:
             # break long string into array for bytes
             b = [raw_bits[i:i+7] for i in range(0, len(raw_bits), 7)]
@@ -106,10 +109,10 @@ class Common:
 
         if (buffer_idx != -1) and (buffer_idx2 != -1):
             try:
-                to_save = open('hidden_file' + payload_file_type, 'wb')
+                to_save = open(dest+'/hidden_file' + payload_file_type, 'wb')
                 to_save.write(fc)
                 to_save.close()
-                print('[+] Successfully extracted message: {}{}'.format('hiddenFile', payload_file_type))
+                print('[+] Successfully extracted message: {}{}'.format(dest+'/hiddenFile', payload_file_type))
             except Exception as e:
                 raise Exception('[!] Failed to write extracted file: {}'.format(str(e)))
             finally:

@@ -5,6 +5,7 @@ steg - steg_img.py
 '''
 from steg import common
 from PIL import Image as img
+import os
 
 class IMG:
     '''
@@ -25,6 +26,8 @@ class IMG:
         self.payload = None
         self.common = common.Common(self.payload_to_hide)
         self.supported = ['PNG','TIFF','TIF','BMP','ICO']
+        self.carrier_root = os.path.split(image_path)[0]
+        self.carrier_filename = os.path.split(image_path)[1]
 
         assert self.carrier_image is not None
 
@@ -84,11 +87,11 @@ class IMG:
         depending on IMG format will use the different Extraction methods
         '''
         if self.image_mode == 'L':
-            return self.L_extract_message(self.fg)
+            return self.L_extract_message(self.fg,dest=self.carrier_root)
         elif self.image_mode in ['RGB', 'BGR']:
-            return self.RGB_extract_message(self.fg)
+            return self.RGB_extract_message(self.fg,dest=self.carrier_root)
         elif self.image_mode == 'RGBA':
-            return self.RGBA_extract_message(self.fg)
+            return self.RGBA_extract_message(self.fg,dest=self.carrier_root)
         elif self.image_mode == '1':
             print("[!] Cannot extract content using an image with a mode of '1'")
             return '.'
@@ -129,14 +132,14 @@ class IMG:
                     # add pixel with modified values to new image
                     newIm.putpixel((col, row),(fgr, fgg, fgb))
             output_file_type = self.assign_output_file_type()
-            newIm.save(str('new.' + output_file_type), output_file_type)
-            print('[+] {} created'.format('new.' + output_file_type))
+            newIm.save(str(self.carrier_root+'/hidden_'+self.carrier_filename), output_file_type)
+            print('[+] {} created'.format(str(self.carrier_root+'/hidden_'+self.carrier_filename)))
         except Exception as e:
             raise Exception('Failed to write new file: {}'.format(str(e)))
 
 
     # extract hidden message from RGB image
-    def RGB_extract_message(self, fg):
+    def RGB_extract_message(self, fg,dest):
         '''
         Extracts and reconstructs payloads concealed in RGB images.
 
@@ -153,7 +156,7 @@ class IMG:
                     hidden += bin(fgg)[-1]
                     hidden += bin(fgb)[-1]
             try:
-                returned_file = self.common.reconstitute_from_binary(hidden)
+                returned_file = self.common.reconstitute_from_binary(hidden,dest)
                 return returned_file
             except Exception as e:
                 raise Exception('Inner failed to extract message: {}'.format(str(e)))
@@ -184,13 +187,13 @@ class IMG:
                     # add pixel to new image
                     newIm.putpixel((col,row),(fgL))
             output_file_type = self.assign_output_file_type()
-            newIm.save(str('new.' + output_file_type), output_file_type)
-            print('[+] {} created'.format('new.' + output_file_type))
+            newIm.save(str(self.carrier_root+'/hidden_'+self.carrier_filename), output_file_type)
+            print('[+] {} created'.format(str(self.carrier_root+'/hidden_'+self.carrier_filename)))
         except Exception as e:
             raise Exception('Failed to write new file: {}'.format(str(e)))
 
     # extract hidden message from L image
-    def L_extract_message(self, fg):
+    def L_extract_message(self, fg,dest):
         '''
         Extracts and reconstructs payloads concealed in L images.
         :param fg: This is the PngImageFile of the carrier image.
@@ -204,7 +207,7 @@ class IMG:
                     
                     hidden += bin(fgL)[-1]
             try:
-                returned_file = self.common.reconstitute_from_binary(hidden)
+                returned_file = self.common.reconstitute_from_binary(hidden,dest=dest)
                 return returned_file
             except Exception as e:
                 raise Exception('Inner failed to extract message: {}'.format(str(e)))
@@ -241,13 +244,13 @@ class IMG:
                     newIm.putpixel((col, row),(fgr, fgg, fgb, fga))
             # if our passed in location exists, try saving there
             output_file_type = self.assign_output_file_type()
-            newIm.save(str('new.' + output_file_type), output_file_type)
-            print('[+] {} created'.format('new.' + output_file_type))
+            newIm.save(str(self.carrier_root+'/hidden_'+self.carrier_filename), output_file_type)
+            print('[+] {} created'.format(str(self.carrier_root+'/hidden_'+self.carrier_filename)))
         except Exception as e:
             raise Exception('[!] Failed to write new file: {}'.format(str(e)))
 
     # extract hidden message from RGBA image
-    def RGBA_extract_message(self, fg):
+    def RGBA_extract_message(self, fg,dest):
         '''
         Extracts and reconstructs payloads concealed in RGBA images.
         :param fg: This is the PngImageFile of the carrier image.
@@ -263,7 +266,7 @@ class IMG:
                     hidden += bin(fgg)[-1]
                     hidden += bin(fgb)[-1]
             try:
-                returned_file = self.common.reconstitute_from_binary(hidden)
+                returned_file = self.common.reconstitute_from_binary(hidden,dest)
                 return returned_file
             except Exception as e:
                 raise Exception('Inner failed to extract message: {}'.format(str(e)))
