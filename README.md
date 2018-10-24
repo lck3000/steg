@@ -11,3 +11,11 @@ Ciclo: 2018-2"
 
 "Steg es una libreria sencilla de Python para ocultar y extraer mensajes para imagenes comprimidas sin perdidad usando la tecnica del Bit Menos Significante(Least-Significant-Bit).
 Formatos Admitidos: PNG,TIFF,BMP y ICO."
+
+### Instrucciones
+
+"Instalar Python.
+Clonar el repositorio. -> ´git clone <enlace>´ en una consola en la carpeta que desee.
+Crear una entorno virtual -> ´python -m venv <nombre_entorno>´
+Instalar dependencias -> ´pip install -r requirements.txt´
+Ejecutar -> ´python app.py´"
