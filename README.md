@@ -1,4 +1,4 @@
-#Proyecto: Esteganografia LSB (c) Fredy Arias (sevfredd,lck3000)
+#Proyecto: Esteganografia LSB (c) Fredy Arias (sevfredd)
 
 "Proyecto sobre esteganografia.
 Curso: Seguridad Informatica.
